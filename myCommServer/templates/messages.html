@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% load static %}
+  <h4>Message Stream</h4>
+
+  {% for message in messages %}
+    <div class="panel panel-info {% if message.transmit_time %}myCommDevice{% else %}server{% endif %}">
+      <div class="panel-heading">
+        <h3 class="panel-title">
+          <div class="panel-title pull-left">
+            <span>To: {{ message.destinationId }} </span><span class="time">{{ message.receivedTime }}</span>
+          </div>
+          <div class="panel-title pull-right">
+            <div>From: {% if message.deviceImei.deviceId %} {{message.deviceImei.deviceId}} {% else %} {{message.user}} {% endif %}
+              {% if message.transmit_time %}
+                 <span class="time">{{ message.transmit_time }}</span>
+                 <a href="{% url 'location' %}?lat={{ message.latitude|urlencode}}&amp;lng={{message.longitude|urlencode}}&amp;text={{message.message|urlencode}}" target="_blank">
+                   <span class="glyphicon glyphicon-map-marker"></span>
+                 </a>
+              {% else %}
+                 <span class="time">{{ message.receivedTime }}</span>
+              {% endif %}
+            </div>
+          </div>
+          <div class="clearfix"></div>
+        </h3>
+      </div>
+
+      <div class="panel-body">
+        {{ message.message|linebreaksbr }}
+      </div>
+    </div>
+
+  {% endfor %}
+
+{% endblock content %}
